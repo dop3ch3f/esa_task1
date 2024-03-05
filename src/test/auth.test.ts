@@ -18,7 +18,7 @@ describe('Testing Auth', () => {
       };
 
       const authRoute = new AuthRoute();
-      const users = authRoute.authController.authService.users;
+      const users = authRoute.auth.auth.users;
 
       users.findOne = jest.fn().mockReturnValue(null);
       users.create = jest.fn().mockReturnValue({
@@ -29,7 +29,7 @@ describe('Testing Auth', () => {
 
       (Sequelize as any).authenticate = jest.fn();
       const app = new App([authRoute]);
-      return request(app.getServer()).post(`${authRoute.path}signup`).send(userData).expect(201);
+      return request(app.getServer()).post(`${authRoute.path}/signup`).send(userData).expect(201);
     });
   });
 
@@ -41,7 +41,7 @@ describe('Testing Auth', () => {
       };
 
       const authRoute = new AuthRoute();
-      const users = authRoute.authController.authService.users;
+      const users = authRoute.auth.auth.users;
 
       users.findOne = jest.fn().mockReturnValue({
         id: 1,
@@ -52,7 +52,7 @@ describe('Testing Auth', () => {
       (Sequelize as any).authenticate = jest.fn();
       const app = new App([authRoute]);
       return request(app.getServer())
-        .post(`${authRoute.path}login`)
+        .post(`${authRoute.path}/login`)
         .send(userData)
         .expect('Set-Cookie', /^Authorization=.+/);
     });

@@ -14,6 +14,8 @@ import { Routes } from '@interfaces/routes.interface';
 import { ErrorMiddleware } from '@middlewares/error.middleware';
 import { logger, stream } from '@utils/logger';
 import chalk from 'chalk';
+import cron from 'node-cron';
+import { ProductService } from '@services/products.service';
 
 export class App {
   public app: express.Application;
@@ -30,6 +32,7 @@ export class App {
     this.initializeRoutes(routes);
     this.initializeSwagger();
     this.initializeErrorHandling();
+    this.initializeCron();
   }
 
   public listen() {
@@ -48,8 +51,8 @@ export class App {
   private async connectToDatabase() {
     await DB.sequelize
       .sync({ force: false })
-      .then(() => console.log('DB synced'))
-      .catch(console.log);
+      .then(() => console.debug('DB synced'))
+      .catch(console.debug);
   }
 
   private initializeMiddlewares() {
@@ -90,5 +93,15 @@ export class App {
 
   private initializeErrorHandling() {
     this.app.use(ErrorMiddleware);
+  }
+
+  private initializeCron() {
+    if (this.env === 'development') {
+      cron.schedule('* * * * *', async () => {
+        console.log('running a prune task every minute');
+        const product = new ProductService();
+        await product.deleteExpiredProducts();
+      });
+    }
   }
 }

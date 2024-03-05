@@ -2,11 +2,13 @@ import { hash } from 'bcrypt';
 import { Service } from 'typedi';
 import { DB } from '@database';
 import { CreateUserDto } from '@dtos/users.dto';
-import { HttpException } from '@/exceptions/httpException';
+import { HttpException } from '@/exceptions/HttpException';
 import { User } from '@interfaces/users.interface';
 
 @Service()
 export class UserService {
+  users = DB.Users;
+
   public async findAllUser(): Promise<User[]> {
     const allUser: User[] = await DB.Users.findAll();
     return allUser;

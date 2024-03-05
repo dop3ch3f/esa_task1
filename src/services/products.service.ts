@@ -1,12 +1,14 @@
 import { Service } from 'typedi';
 import { DB } from '@database';
 import { Product } from '@interfaces/products.interface';
-import { HttpException } from '@/exceptions/httpException';
+import { HttpException } from '@/exceptions/HttpException';
 import { CreateProductDto } from '@/dtos/products.dto';
 import { Op } from 'sequelize';
 
 @Service()
 export class ProductService {
+  products = DB.Products;
+
   public async findProductById(productId: number): Promise<Product> {
     const findProduct: Product = await DB.Products.findByPk(productId);
     if (!findProduct) throw new HttpException(409, "User doesn't exist");
@@ -15,6 +17,8 @@ export class ProductService {
   }
 
   public async findProduct(item: string): Promise<Product> {
+    await this.deleteExpiredProducts();
+
     const product: Product = await DB.Products.findOne({ where: { name: item } });
 
     if (!product) throw new HttpException(404, `This product is not found`);
