@@ -12,6 +12,18 @@ services:
     networks:
       - backend
 
+  mysql:
+    container_name: database
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_USER: "root"
+      MYSQL_ROOT_PASSWORD: "password"
+      MYSQL_DATABASE: "dev"
+    ports:
+      - "3306:3306"
+    networks:
+      - backend
+
   server:
     container_name: server
     build:
@@ -23,6 +35,9 @@ services:
       DB_USER: root
       DB_PASSWORD: password
       DB_DATABASE: dev
+      DB_HOST: database
+      DB_PORT: 3306
+      SECRET_KEY: secretKey
     volumes:
       - ./:/app
       - /app/node_modules
@@ -34,17 +49,6 @@ services:
     depends_on:
       - mysql
 
-  mysql:
-    container_name: mysql
-    image: mysql:5.7
-    environment:
-      DB_USER: root
-      DB_PASSWORD: password
-      DB_DATABASE: dev
-    ports:
-      - "3306:3306"
-    networks:
-      - backend
 
 networks:
   backend:

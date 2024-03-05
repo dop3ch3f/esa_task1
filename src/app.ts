@@ -2,17 +2,18 @@ import 'reflect-metadata';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import express from 'express';
+import express, { Request } from 'express';
 import helmet from 'helmet';
 import hpp from 'hpp';
 import morgan from 'morgan';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS } from '@config';
+import { NODE_ENV, PORT, ORIGIN, CREDENTIALS } from '@config';
 import { DB } from '@database';
 import { Routes } from '@interfaces/routes.interface';
 import { ErrorMiddleware } from '@middlewares/error.middleware';
 import { logger, stream } from '@utils/logger';
+import chalk from 'chalk';
 
 export class App {
   public app: express.Application;
@@ -45,11 +46,14 @@ export class App {
   }
 
   private async connectToDatabase() {
-    await DB.sequelize.sync({ force: false });
+    await DB.sequelize
+      .sync({ force: false })
+      .then(() => console.log('DB synced'))
+      .catch(console.log);
   }
 
   private initializeMiddlewares() {
-    this.app.use(morgan(LOG_FORMAT, { stream }));
+    morgan.token('body', (req: Request) => JSON.stringify(req.body));
     this.app.use(cors({ origin: ORIGIN, credentials: CREDENTIALS }));
     this.app.use(hpp());
     this.app.use(helmet());
@@ -57,6 +61,9 @@ export class App {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(cookieParser());
+    this.app.use(
+      morgan(`${chalk.green('[Http]')} ${chalk.yellow(':method')} ${chalk.blue(':url')} :response-time ms :body ${chalk.red.bold(':status')}`),
+    );
   }
 
   private initializeRoutes(routes: Routes[]) {
