@@ -8,19 +8,20 @@ import hpp from 'hpp';
 import morgan from 'morgan';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import { NODE_ENV, PORT, ORIGIN, CREDENTIALS } from '@config';
+import { CREDENTIALS, NODE_ENV, ORIGIN, PORT } from '@config';
 import { DB } from '@database';
 import { Routes } from '@interfaces/routes.interface';
 import { ErrorMiddleware } from '@middlewares/error.middleware';
-import { logger, stream } from '@utils/logger';
+import { logger } from '@utils/logger';
 import chalk from 'chalk';
-import cron from 'node-cron';
 import { ProductService } from '@services/products.service';
+import cron from 'node-cron';
 
-export class App {
+export default class App {
   public app: express.Application;
   public env: string;
   public port: string | number;
+  public task: cron.ScheduledTask;
 
   constructor(routes: Routes[]) {
     this.app = express();
@@ -48,10 +49,14 @@ export class App {
     return this.app;
   }
 
+  public stopCron() {
+    this.task.stop();
+  }
+
   private async connectToDatabase() {
     await DB.sequelize
       .sync({ force: false })
-      .then(() => console.debug('DB synced'))
+      .then(() => console.log('synced'))
       .catch(console.debug);
   }
 
@@ -96,12 +101,15 @@ export class App {
   }
 
   private initializeCron() {
-    if (this.env === 'development') {
-      cron.schedule('* * * * *', async () => {
-        console.log('running a prune task every minute');
-        const product = new ProductService();
-        await product.deleteExpiredProducts();
-      });
-    }
+    this.task = cron.schedule('* * * * * *', async () => {
+      // console.log('running every second');
+      const product = new ProductService();
+      await product.deleteExpiredProducts();
+    });
+    // for millisecond control
+    // setInterval(async () => {
+    //   const product = new ProductService();
+    //   await product.deleteExpiredProducts();
+    // }, 1000);
   }
 }

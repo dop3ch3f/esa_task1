@@ -14,7 +14,7 @@ services:
     volumes:
       - ./:/app
       - /app/node_modules
-    command: [ "npm", "run", "dev" ]
+    command: [ "npm", "run", "test" ]
     environment:
       DB_HOST: database
       DB_USER: postgres
@@ -27,7 +27,7 @@ services:
       LOG_DIR: "../logs"
       ORIGIN: "*"
       CREDENTIALS: true
-    restart: "unless-stopped"
+      NODE_ENV: "testing"
     depends_on:
       - database
 

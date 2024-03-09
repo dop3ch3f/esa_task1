@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsNumber, IsPositive, IsDate } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
 
 export class CreateProductDto {
   @IsString()
@@ -10,6 +10,6 @@ export class CreateProductDto {
   public quantity: number;
 
   @IsNotEmpty()
-  @IsDate()
-  public expiry: Date;
+  @IsNumber()
+  public expiry: number;
 }

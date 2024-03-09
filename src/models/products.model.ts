@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
+import { DataTypes, Model, Optional, Sequelize } from 'sequelize';
 import { Product } from '@interfaces/products.interface';
 
 export type ProductCreationAttributes = Optional<Product, 'name' | 'quantity' | 'expiry'>;
@@ -7,7 +7,7 @@ export class ProductModel extends Model<Product, ProductCreationAttributes> impl
   id: number;
   name: string;
   quantity: number;
-  expiry: Date;
+  expiry: number;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -23,7 +23,6 @@ export default function (sequelize: Sequelize): typeof ProductModel {
       },
       name: {
         allowNull: false,
-        unique: true,
         type: DataTypes.STRING,
       },
       quantity: {
@@ -32,7 +31,7 @@ export default function (sequelize: Sequelize): typeof ProductModel {
       },
       expiry: {
         allowNull: false,
-        type: DataTypes.DATE,
+        type: DataTypes.BIGINT,
       },
     },
     {
