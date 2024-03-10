@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import { Container } from 'typedi';
 import { Product } from '@interfaces/products.interface';
 
-export class ProductController {
+export class IndexController {
   public product = Container.get(ProductService);
 
   public addProduct = async (req: Request, res: Response, next: NextFunction) => {

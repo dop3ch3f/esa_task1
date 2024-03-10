@@ -1,4 +1,4 @@
-import { ProductRoute } from '@routes/products.route';
+import { IndexRoute } from '@routes/index.route';
 import App from '@/app';
 import request from 'supertest';
 import { DB } from '@database';
@@ -15,10 +15,10 @@ describe('item=bar:', () => {
   const t0 = new Date().getTime();
 
   it('t=t0, POST /bar/add, IN: {expiry: t0+10000, quantity: 10}, OUT: {}', async () => {
-    const productsRoute = new ProductRoute();
-    const app = new App([productsRoute]);
+    const indexRoute = new IndexRoute();
+    const app = new App([indexRoute]);
     const response = await request(app.getServer())
-      .post(`${productsRoute.path}/bar/add`)
+      .post(`${indexRoute.path}/bar/add`)
       .send({
         quantity: 10,
         expiry: t0 + 10000,
@@ -32,10 +32,10 @@ describe('item=bar:', () => {
     // delay by 1000 to get 1000
     await new Promise<void>(resolve => setTimeout(() => resolve(), 1000));
 
-    const productsRoute = new ProductRoute();
-    const app = new App([productsRoute]);
+    const indexRoute = new IndexRoute();
+    const app = new App([indexRoute]);
     const response = await request(app.getServer())
-      .post(`${productsRoute.path}/bar/add`)
+      .post(`${indexRoute.path}/bar/add`)
       .send({
         quantity: 10,
         expiry: t0 + 15000,
@@ -49,10 +49,10 @@ describe('item=bar:', () => {
     // delay by 1000 to get 2000
     await new Promise<void>(resolve => setTimeout(() => resolve(), 1000));
 
-    const productsRoute = new ProductRoute();
-    const app = new App([productsRoute]);
+    const indexRoute = new IndexRoute();
+    const app = new App([indexRoute]);
     const response = await request(app.getServer())
-      .post(`${productsRoute.path}/bar/add`)
+      .post(`${indexRoute.path}/bar/add`)
       .send({
         quantity: 10,
         expiry: t0 + 20000,
@@ -66,10 +66,10 @@ describe('item=bar:', () => {
     // delay by 1000 to get  3000
     await new Promise<void>(resolve => setTimeout(() => resolve(), 1000));
 
-    const productsRoute = new ProductRoute();
-    const app = new App([productsRoute]);
+    const indexRoute = new IndexRoute();
+    const app = new App([indexRoute]);
 
-    const response = await request(app.getServer()).get(`${productsRoute.path}/bar/quantity`);
+    const response = await request(app.getServer()).get(`${indexRoute.path}/bar/quantity`);
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual({
@@ -82,10 +82,10 @@ describe('item=bar:', () => {
     // delay by 2000 to get  5000
     await new Promise<void>(resolve => setTimeout(() => resolve(), 2000));
 
-    const productsRoute = new ProductRoute();
-    const app = new App([productsRoute]);
+    const indexRoute = new IndexRoute();
+    const app = new App([indexRoute]);
 
-    const response = await request(app.getServer()).post(`${productsRoute.path}/bar/sell`).send({
+    const response = await request(app.getServer()).post(`${indexRoute.path}/bar/sell`).send({
       quantity: 5,
     });
 
@@ -97,10 +97,10 @@ describe('item=bar:', () => {
     // delay by 2000 to get  7000
     await new Promise<void>(resolve => setTimeout(() => resolve(), 2000));
 
-    const productsRoute = new ProductRoute();
-    const app = new App([productsRoute]);
+    const indexRoute = new IndexRoute();
+    const app = new App([indexRoute]);
 
-    const response = await request(app.getServer()).get(`${productsRoute.path}/bar/quantity`);
+    const response = await request(app.getServer()).get(`${indexRoute.path}/bar/quantity`);
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual({
@@ -113,10 +113,10 @@ describe('item=bar:', () => {
     // delay by 3000 to get  10000
     await new Promise<void>(resolve => setTimeout(() => resolve(), 3000));
 
-    const productsRoute = new ProductRoute();
-    const app = new App([productsRoute]);
+    const indexRoute = new IndexRoute();
+    const app = new App([indexRoute]);
 
-    const response = await request(app.getServer()).get(`${productsRoute.path}/bar/quantity`);
+    const response = await request(app.getServer()).get(`${indexRoute.path}/bar/quantity`);
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual({
@@ -129,10 +129,10 @@ describe('item=bar:', () => {
     // delay by 3000 to get  13000
     await new Promise<void>(resolve => setTimeout(() => resolve(), 3000));
 
-    const productsRoute = new ProductRoute();
-    const app = new App([productsRoute]);
+    const indexRoute = new IndexRoute();
+    const app = new App([indexRoute]);
 
-    const response = await request(app.getServer()).post(`${productsRoute.path}/bar/sell`).send({
+    const response = await request(app.getServer()).post(`${indexRoute.path}/bar/sell`).send({
       quantity: 13,
     });
 
@@ -144,10 +144,10 @@ describe('item=bar:', () => {
     // delay by 1000 to get  14000
     await new Promise<void>(resolve => setTimeout(() => resolve(), 1000));
 
-    const productsRoute = new ProductRoute();
-    const app = new App([productsRoute]);
+    const indexRoute = new IndexRoute();
+    const app = new App([indexRoute]);
 
-    const response = await request(app.getServer()).get(`${productsRoute.path}/bar/quantity`);
+    const response = await request(app.getServer()).get(`${indexRoute.path}/bar/quantity`);
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual({
@@ -160,10 +160,10 @@ describe('item=bar:', () => {
     // delay by 3000 to get  17000
     await new Promise<void>(resolve => setTimeout(() => resolve(), 3000));
 
-    const productsRoute = new ProductRoute();
-    const app = new App([productsRoute]);
+    const indexRoute = new IndexRoute();
+    const app = new App([indexRoute]);
 
-    const response = await request(app.getServer()).get(`${productsRoute.path}/bar/quantity`);
+    const response = await request(app.getServer()).get(`${indexRoute.path}/bar/quantity`);
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual({
@@ -176,10 +176,10 @@ describe('item=bar:', () => {
     // delay by 3000 to get  20000
     await new Promise<void>(resolve => setTimeout(() => resolve(), 3000));
 
-    const productsRoute = new ProductRoute();
-    const app = new App([productsRoute]);
+    const indexRoute = new IndexRoute();
+    const app = new App([indexRoute]);
 
-    const response = await request(app.getServer()).get(`${productsRoute.path}/bar/quantity`);
+    const response = await request(app.getServer()).get(`${indexRoute.path}/bar/quantity`);
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual({
