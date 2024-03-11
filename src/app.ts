@@ -17,6 +17,10 @@ import chalk from 'chalk';
 import { ProductService } from '@services/products.service';
 import cron from 'node-cron';
 
+import cluster from 'node:cluster';
+
+import process from 'node:process';
+
 export default class App {
   public app: express.Application;
   public env: string;
@@ -37,12 +41,29 @@ export default class App {
   }
 
   public listen() {
-    this.app.listen(this.port, () => {
-      logger.info(`=================================`);
-      logger.info(`======= ENV: ${this.env} =======`);
-      logger.info(`🚀 App listening on the port ${this.port}`);
-      logger.info(`=================================`);
-    });
+    if (!Boolean(this.env === 'testing') && cluster.isPrimary) {
+      console.log(`Primary ${process.pid} is running`);
+
+      // Fork workers.
+      for (let i = 0; i < 5; i++) {
+        cluster.fork();
+      }
+
+      cluster.on('exit', (worker, code, signal) => {
+        console.log(`worker ${worker.process.pid} died`);
+      });
+    } else {
+      // Workers can share any TCP connection
+      // In this case it is an HTTP server
+      this.app.listen(this.port, () => {
+        logger.info(`=================================`);
+        logger.info(`======= ENV: ${this.env} =======`);
+        logger.info(`🚀 App listening on the port ${this.port}`);
+        logger.info(`=================================`);
+      });
+
+      console.log(`Worker ${process.pid} started`);
+    }
   }
 
   public getServer() {
