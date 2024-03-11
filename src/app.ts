@@ -45,7 +45,7 @@ export default class App {
       console.log(`Primary ${process.pid} is running`);
 
       // Fork workers.
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 3; i++) {
         cluster.fork();
       }
 
