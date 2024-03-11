@@ -15,5 +15,9 @@ export class IndexRoute implements Routes {
     this.router.post(`${this.path}/:item/add`, this.index.addProduct);
     this.router.post(`${this.path}/:item/sell`, this.index.sellProduct);
     this.router.get(`${this.path}/:item/quantity`, this.index.getProductQuantity);
+    this.router.get(this.path, (req, res, next) => {
+      res.send('Server online');
+      next();
+    });
   }
 }
